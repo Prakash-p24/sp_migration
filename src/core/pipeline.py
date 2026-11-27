@@ -1,7 +1,9 @@
 """Coordinates parser, IR visitor, converter, generator and validators."""
 
 from src.core.migration_engine import MigrationNotImplementedError
+from src.ir.serializer import to_dict
 from src.parsers.mssql_parser import MSSQLParser
+from src.visitors.mssql_ir_visitor import MSSQLIRVisitor
 
 
 class MigrationPipeline:
@@ -20,17 +22,26 @@ class MigrationPipeline:
 
         parser = MSSQLParser()
         tree = parser.parse(source_sql)
-        procedure_names = parser.get_procedure_names(tree)
-        if not procedure_names:
+        procedures = MSSQLIRVisitor().visit(tree)
+        if not procedures:
             raise ValueError(
                 "The SQL parsed successfully, but it does not contain a "
                 "CREATE, ALTER, or CREATE OR ALTER procedure."
             )
+        if len(procedures) > 1:
+            raise ValueError("Submit one stored procedure per migration request.")
+        procedure_names = [
+            f"{procedure.header.schema}.{procedure.header.procedure_name}"
+            if procedure.header.schema
+            else procedure.header.procedure_name
+            for procedure in procedures
+        ]
 
         return {
             "source": source,
             "target": target,
             "status": "parsed",
-            "message": "T-SQL syntax is valid. SQL conversion has not been performed.",
+            "message": "T-SQL parsed into the migration IR. SQL conversion has not been performed.",
             "procedures": procedure_names,
+            "ir": to_dict(procedures[0]),
         }

@@ -13,4 +13,5 @@ class SourceLocation:
 class IRNode:
     """Base class for dialect-neutral intermediate representation nodes."""
     location: SourceLocation | None = None
+    original_sql: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)

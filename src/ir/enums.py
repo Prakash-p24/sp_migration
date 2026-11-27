@@ -1,0 +1,58 @@
+"""Shared dialect-neutral IR classifications."""
+
+from enum import StrEnum
+
+
+class StatementKind(StrEnum):
+    SELECT = "SELECT"
+    INSERT = "INSERT"
+    UPDATE = "UPDATE"
+    DELETE = "DELETE"
+    MERGE = "MERGE"
+    IF = "IF"
+    LOOP = "LOOP"
+    ASSIGNMENT = "ASSIGNMENT"
+    CALL = "CALL"
+    CURSOR = "CURSOR"
+    TRANSACTION = "TRANSACTION"
+    EXCEPTION = "EXCEPTION"
+    HANDLER = "HANDLER"
+    DYNAMIC_SQL = "DYNAMIC_SQL"
+    RETURN = "RETURN"
+    BREAK = "BREAK"
+    CONTINUE = "CONTINUE"
+    GOTO = "GOTO"
+    TEMPORARY_OBJECT = "TEMPORARY_OBJECT"
+    DECLARE = "DECLARE"
+    BLOCK = "BLOCK"
+    OTHER = "OTHER"
+    UNSUPPORTED = "UNSUPPORTED"
+
+
+class ExpressionKind(StrEnum):
+    RAW = "RAW"
+    COLUMN = "COLUMN"
+    VARIABLE = "VARIABLE"
+    LITERAL = "LITERAL"
+    BINARY = "BINARY"
+    UNARY = "UNARY"
+    FUNCTION_CALL = "FUNCTION_CALL"
+    CASE = "CASE"
+    CAST = "CAST"
+    SUBQUERY = "SUBQUERY"
+    EXISTS = "EXISTS"
+    IN = "IN"
+    BETWEEN = "BETWEEN"
+    COMPARISON = "COMPARISON"
+    BOOLEAN = "BOOLEAN"
+    WINDOW = "WINDOW"
+    AGGREGATE = "AGGREGATE"
+
+
+class SelectIntent(StrEnum):
+    RESULT_SET = "RESULT_SET"
+    VARIABLE_ASSIGNMENT = "VARIABLE_ASSIGNMENT"
+    INTO_TABLE = "INTO_TABLE"
+    EXISTS_CHECK = "EXISTS_CHECK"
+    CURSOR_SOURCE = "CURSOR_SOURCE"
+    UNKNOWN = "UNKNOWN"

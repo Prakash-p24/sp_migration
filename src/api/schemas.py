@@ -1,6 +1,6 @@
 """Pydantic schemas for the migration API."""
 
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -23,3 +23,4 @@ class MigrationResponse(BaseModel):
     status: Literal["parsed"]
     message: str
     procedures: list[str]
+    ir: dict[str, Any]
