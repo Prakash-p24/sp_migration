@@ -9,6 +9,10 @@ def test_main_is_the_migration_service_without_auth_routes():
 
     assert app.title == "Stored Procedure Migration"
 
-    paths = {route.path for route in app.routes}
+    paths = {
+        getattr(route, "path", None)
+        for route in app.routes
+        if getattr(route, "path", None) is not None
+    }
     assert "/health_check" in paths
     assert not paths.intersection({"/login", "/register", "/auth"})
