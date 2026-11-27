@@ -324,6 +324,25 @@ class MSSQLIRVisitor(TSqlParserVisitor):
             "having": self._source_text(query.having) if query.having else None,
             "order_by": order_by,
         }
+        if query.top:
+            top = query.top
+            if top.top_count():
+                count = top.top_count()
+                attrs["top_limit"] = (
+                    count.DECIMAL().getText()
+                    if count.DECIMAL()
+                    else self._source_text(count.expression())
+                )
+                attrs["top_percent"] = False
+            elif top.top_percent():
+                percent = top.top_percent()
+                attrs["top_limit"] = (
+                    percent.percent_constant.text
+                    if percent.percent_constant
+                    else self._source_text(percent.topper_expression)
+                )
+                attrs["top_percent"] = True
+            attrs["top_with_ties"] = bool(top.TIES())
         if assignment_targets:
             attrs["assignment_targets"] = assignment_targets
         if query.into:

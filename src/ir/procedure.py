@@ -55,6 +55,6 @@ class Procedure(IRNode):
     declarations: list[IRNode] = field(default_factory=list)
     body: list[Statement] = field(default_factory=list)
     exception_handlers: list[Statement] = field(default_factory=list)
-    metadata: dict[str, str] = field(
+    metadata: dict[str, Any] = field(
         default_factory=lambda: {"source_language": "TSQL"}
     )

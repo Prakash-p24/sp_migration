@@ -28,7 +28,10 @@ def to_dict(value: Any) -> Any:
             "exception_handlers": to_dict(value.exception_handlers),
             "metadata": to_dict(value.metadata),
         }
-        if value.original_sql:
+        if (
+            value.original_sql
+            and not result["metadata"].get("source", {}).get("original_sql")
+        ):
             result["metadata"]["original_sql"] = value.original_sql
         return result
     if isinstance(value, ProcedureHeader):
