@@ -1,28 +1,13 @@
 """HTTP routes for stored-procedure migrations."""
 
-from typing import Literal
-
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, Field
 
 from src.core.migration_engine import MigrationEngine, MigrationNotImplementedError
 from src.core.pipeline import MigrationPipeline
+from src.api.schemas import MigrationRequest, MigrationResponse
 
 router = APIRouter(prefix="/api/v1", tags=["migrations"])
 migration_engine = MigrationEngine(MigrationPipeline())
-
-
-class MigrationRequest(BaseModel):
-    source: Literal["mssql", "mysql"] = Field(description="Source SQL dialect")
-    target: Literal["postgres"] = Field(description="Target SQL dialect")
-    source_code: str = Field(min_length=1, description="Stored procedure SQL to migrate")
-
-
-class MigrationResponse(BaseModel):
-    source: str
-    target: str
-    status: Literal["completed"]
-    converted_code: str
 
 
 @router.post("/migrations", response_model=MigrationResponse)
