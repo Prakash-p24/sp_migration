@@ -57,6 +57,26 @@ poetry run uvicorn src.main:app --reload
 
 OpenAPI documentation is available at `http://localhost:8000/docs`.
 
+### Run with Docker Compose
+
+Compose reads database settings from a local `.env` file. Create it from the
+example, then replace the placeholder credentials and database name with your
+PostgreSQL connection details:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Then start the service:
+
+```powershell
+docker compose up --build -d
+```
+
+The `.env` file is ignored by Git. For PostgreSQL running on the same Windows
+machine, `host.docker.internal` can be used as the database host from inside
+the container.
+
 The migration request endpoint is `POST /api/v1/migrations`:
 
 ```json
