@@ -16,11 +16,12 @@ class MigrationRequest(BaseModel):
 
 
 class MigrationResponse(BaseModel):
-    """Successful stored-procedure parsing response."""
+    """Successful PostgreSQL procedure generation response."""
 
     source: str
     target: str
-    status: Literal["parsed"]
+    status: Literal["completed"]
     message: str
     procedures: list[str]
+    converted_code: str
     ir: dict[str, Any]

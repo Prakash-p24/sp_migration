@@ -1,6 +1,8 @@
 """Coordinates parser, IR visitor, converter, generator and validators."""
 
 from src.core.migration_engine import MigrationNotImplementedError
+from src.converters.mssql_to_postgres.procedure_converter import MSSQLProcedureConverter
+from src.generators.postgres_generator import PostgreSQLGenerator
 from src.ir.serializer import to_dict
 from src.parsers.mssql_parser import MSSQLParser
 from src.visitors.mssql_ir_visitor import MSSQLIRVisitor
@@ -30,18 +32,38 @@ class MigrationPipeline:
             )
         if len(procedures) > 1:
             raise ValueError("Submit one stored procedure per migration request.")
+        postgres_ir = MSSQLProcedureConverter().convert(procedures[0])
+        generator = PostgreSQLGenerator()
+        converted_code = generator.generate(postgres_ir)
+        postgres_ir.metadata["conversion"]["pipeline_stage"] = "sql_generation"
+        postgres_ir.metadata["conversion"]["generator_executed"] = True
+        postgres_ir.metadata["conversion"]["message"] = (
+            "Source IR was mapped to PostgreSQL-target IR and PostgreSQL procedure SQL was generated. "
+            "Generated SQL was not independently parsed or executed."
+        )
+        if generator.generated_result_cursors:
+            postgres_ir.metadata["target"]["result_set_strategy"] = (
+                "INOUT refcursor parameters; caller fetches each cursor in a transaction"
+            )
+            postgres_ir.metadata["changes"].append(
+                {
+                    "category": "result_set_strategy",
+                    "source": "SELECT result set",
+                    "target": "INOUT refcursor parameter",
+                }
+            )
         procedure_names = [
-            f"{procedure.header.schema}.{procedure.header.procedure_name}"
-            if procedure.header.schema
-            else procedure.header.procedure_name
-            for procedure in procedures
+            f"{postgres_ir.header.schema}.{postgres_ir.header.procedure_name}"
+            if postgres_ir.header.schema
+            else postgres_ir.header.procedure_name
         ]
 
         return {
             "source": source,
             "target": target,
-            "status": "parsed",
-            "message": "T-SQL parsed into the migration IR. SQL conversion has not been performed.",
+            "status": "completed",
+            "message": "PostgreSQL procedure SQL generated; syntax validation has not been performed.",
             "procedures": procedure_names,
-            "ir": to_dict(procedures[0]),
+            "converted_code": converted_code,
+            "ir": to_dict(postgres_ir),
         }
