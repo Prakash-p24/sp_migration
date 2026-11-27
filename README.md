@@ -138,4 +138,6 @@ unchanged by application refactors. The scripts under `scripts/` describe the
 generation workflow; run them only when intentionally updating grammar
 artifacts.
 
-
+File
+└── Batch
+    └── Procedure: dbo.GetCustomers
