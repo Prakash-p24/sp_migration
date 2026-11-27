@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+
+# Test, lint and type-check caches / output
+.pytest_cache/
+.hypothesis/
+.tox/
+.nox/
+.mypy_cache/
+.pyright/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Local tool caches
+.cache/
+pip-wheel-metadata/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+.envrc
+
+# Testing
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Build / distribution
+dist/
+build/
+*.egg-info/
+site/
+
+# # ANTLR tool download (generated parser source remains trackable)
+# src/antlr-*-complete.jar
+
+# Alembic
+*.db
+*.sqlite
+*.sqlite3
+
+# Editor temporary and backup files
+*.swp
+*.swo
+*.tmp
+*.bak
+*~
+
+# Poetry (keep poetry.lock committed)
+poetry.toml

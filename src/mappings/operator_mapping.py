@@ -1,0 +1,1 @@
+"""Central operator mapping tables."""
