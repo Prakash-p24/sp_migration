@@ -77,6 +77,34 @@ The `.env` file is ignored by Git. For PostgreSQL running on the same Windows
 machine, `host.docker.internal` can be used as the database host from inside
 the container.
 
+## Database migrations and seeding
+
+### 1. Apply database migrations
+
+When running with Docker, migrations run automatically on container startup via `docker-entrypoint.sh`.
+
+To apply migrations manually or when running locally:
+
+```powershell
+# Inside Docker (manual run)
+docker exec -it sp-migration alembic upgrade head
+
+# Or locally using Poetry
+poetry run alembic upgrade head
+```
+
+### 2. Seed conversion mappings
+
+Populate supported dialects, categories, and conversion mapping rules into PostgreSQL:
+
+```powershell
+# Using Docker (recommended)
+docker exec -it sp-migration python scripts/seed_mssql_postgres.py
+
+# Or locally using Poetry
+poetry run python scripts/seed_mssql_postgres.py
+```
+
 The migration request endpoint is `POST /api/v1/migrations`:
 
 ```json
