@@ -16,9 +16,10 @@ class MigrationRequest(BaseModel):
 
 
 class MigrationResponse(BaseModel):
-    """Successful stored-procedure migration response."""
+    """Successful stored-procedure parsing response."""
 
     source: str
     target: str
-    status: Literal["completed"]
-    converted_code: str
+    status: Literal["parsed"]
+    message: str
+    procedures: list[str]
