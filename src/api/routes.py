@@ -12,9 +12,9 @@ migration_engine = MigrationEngine(MigrationPipeline())
 
 @router.post("/migrations", response_model=MigrationResponse)
 def migrate_stored_procedure(request: MigrationRequest):
-    """Convert a stored procedure from a supported source dialect to PostgreSQL."""
+    """Parse a stored procedure from a supported source dialect."""
     try:
-        converted_code = migration_engine.migrate_sql(
+        result = migration_engine.migrate_sql(
             request.source_code,
             source_dialect=request.source,
             target_dialect=request.target,
@@ -23,9 +23,4 @@ def migrate_stored_procedure(request: MigrationRequest):
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except MigrationNotImplementedError as exc:
         raise HTTPException(status_code=501, detail=str(exc)) from exc
-    return MigrationResponse(
-        source=request.source,
-        target=request.target,
-        status="completed",
-        converted_code=converted_code,
-    )
+    return MigrationResponse(**result)
